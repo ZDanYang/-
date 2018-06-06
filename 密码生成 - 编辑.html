@@ -1,0 +1,525 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>密码生成</title>
+  </head>
+  <body>
+  <script>
+
+/***MD5 来源 https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js 为断网环境考虑 使用方法，例如：var hash = md5("value"); ***/
+
+/*
+ * JavaScript MD5
+ * https://github.com/blueimp/JavaScript-MD5
+ *
+ * Copyright 2011, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * https://opensource.org/licenses/MIT
+ *
+ * Based on
+ * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
+ * Digest Algorithm, as defined in RFC 1321.
+ * Version 2.2 Copyright (C) Paul Johnston 1999 - 2009
+ * Other contributors: Greg Holt, Andrew Kepert, Ydnar, Lostinet
+ * Distributed under the BSD License
+ * See http://pajhome.org.uk/crypt/md5 for more info.
+ */
+
+/* global define */
+
+;(function ($) {
+  'use strict'
+
+  /*
+  * Add integers, wrapping at 2^32. This uses 16-bit operations internally
+  * to work around bugs in some JS interpreters.
+  */
+  function safeAdd (x, y) {
+    var lsw = (x & 0xffff) + (y & 0xffff)
+    var msw = (x >> 16) + (y >> 16) + (lsw >> 16)
+    return (msw << 16) | (lsw & 0xffff)
+  }
+
+  /*
+  * Bitwise rotate a 32-bit number to the left.
+  */
+  function bitRotateLeft (num, cnt) {
+    return (num << cnt) | (num >>> (32 - cnt))
+  }
+
+  /*
+  * These functions implement the four basic operations the algorithm uses.
+  */
+  function md5cmn (q, a, b, x, s, t) {
+    return safeAdd(bitRotateLeft(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b)
+  }
+  function md5ff (a, b, c, d, x, s, t) {
+    return md5cmn((b & c) | (~b & d), a, b, x, s, t)
+  }
+  function md5gg (a, b, c, d, x, s, t) {
+    return md5cmn((b & d) | (c & ~d), a, b, x, s, t)
+  }
+  function md5hh (a, b, c, d, x, s, t) {
+    return md5cmn(b ^ c ^ d, a, b, x, s, t)
+  }
+  function md5ii (a, b, c, d, x, s, t) {
+    return md5cmn(c ^ (b | ~d), a, b, x, s, t)
+  }
+
+  /*
+  * Calculate the MD5 of an array of little-endian words, and a bit length.
+  */
+  function binlMD5 (x, len) {
+    /* append padding */
+    x[len >> 5] |= 0x80 << (len % 32)
+    x[((len + 64) >>> 9 << 4) + 14] = len
+
+    var i
+    var olda
+    var oldb
+    var oldc
+    var oldd
+    var a = 1732584193
+    var b = -271733879
+    var c = -1732584194
+    var d = 271733878
+
+    for (i = 0; i < x.length; i += 16) {
+      olda = a
+      oldb = b
+      oldc = c
+      oldd = d
+
+      a = md5ff(a, b, c, d, x[i], 7, -680876936)
+      d = md5ff(d, a, b, c, x[i + 1], 12, -389564586)
+      c = md5ff(c, d, a, b, x[i + 2], 17, 606105819)
+      b = md5ff(b, c, d, a, x[i + 3], 22, -1044525330)
+      a = md5ff(a, b, c, d, x[i + 4], 7, -176418897)
+      d = md5ff(d, a, b, c, x[i + 5], 12, 1200080426)
+      c = md5ff(c, d, a, b, x[i + 6], 17, -1473231341)
+      b = md5ff(b, c, d, a, x[i + 7], 22, -45705983)
+      a = md5ff(a, b, c, d, x[i + 8], 7, 1770035416)
+      d = md5ff(d, a, b, c, x[i + 9], 12, -1958414417)
+      c = md5ff(c, d, a, b, x[i + 10], 17, -42063)
+      b = md5ff(b, c, d, a, x[i + 11], 22, -1990404162)
+      a = md5ff(a, b, c, d, x[i + 12], 7, 1804603682)
+      d = md5ff(d, a, b, c, x[i + 13], 12, -40341101)
+      c = md5ff(c, d, a, b, x[i + 14], 17, -1502002290)
+      b = md5ff(b, c, d, a, x[i + 15], 22, 1236535329)
+
+      a = md5gg(a, b, c, d, x[i + 1], 5, -165796510)
+      d = md5gg(d, a, b, c, x[i + 6], 9, -1069501632)
+      c = md5gg(c, d, a, b, x[i + 11], 14, 643717713)
+      b = md5gg(b, c, d, a, x[i], 20, -373897302)
+      a = md5gg(a, b, c, d, x[i + 5], 5, -701558691)
+      d = md5gg(d, a, b, c, x[i + 10], 9, 38016083)
+      c = md5gg(c, d, a, b, x[i + 15], 14, -660478335)
+      b = md5gg(b, c, d, a, x[i + 4], 20, -405537848)
+      a = md5gg(a, b, c, d, x[i + 9], 5, 568446438)
+      d = md5gg(d, a, b, c, x[i + 14], 9, -1019803690)
+      c = md5gg(c, d, a, b, x[i + 3], 14, -187363961)
+      b = md5gg(b, c, d, a, x[i + 8], 20, 1163531501)
+      a = md5gg(a, b, c, d, x[i + 13], 5, -1444681467)
+      d = md5gg(d, a, b, c, x[i + 2], 9, -51403784)
+      c = md5gg(c, d, a, b, x[i + 7], 14, 1735328473)
+      b = md5gg(b, c, d, a, x[i + 12], 20, -1926607734)
+
+      a = md5hh(a, b, c, d, x[i + 5], 4, -378558)
+      d = md5hh(d, a, b, c, x[i + 8], 11, -2022574463)
+      c = md5hh(c, d, a, b, x[i + 11], 16, 1839030562)
+      b = md5hh(b, c, d, a, x[i + 14], 23, -35309556)
+      a = md5hh(a, b, c, d, x[i + 1], 4, -1530992060)
+      d = md5hh(d, a, b, c, x[i + 4], 11, 1272893353)
+      c = md5hh(c, d, a, b, x[i + 7], 16, -155497632)
+      b = md5hh(b, c, d, a, x[i + 10], 23, -1094730640)
+      a = md5hh(a, b, c, d, x[i + 13], 4, 681279174)
+      d = md5hh(d, a, b, c, x[i], 11, -358537222)
+      c = md5hh(c, d, a, b, x[i + 3], 16, -722521979)
+      b = md5hh(b, c, d, a, x[i + 6], 23, 76029189)
+      a = md5hh(a, b, c, d, x[i + 9], 4, -640364487)
+      d = md5hh(d, a, b, c, x[i + 12], 11, -421815835)
+      c = md5hh(c, d, a, b, x[i + 15], 16, 530742520)
+      b = md5hh(b, c, d, a, x[i + 2], 23, -995338651)
+
+      a = md5ii(a, b, c, d, x[i], 6, -198630844)
+      d = md5ii(d, a, b, c, x[i + 7], 10, 1126891415)
+      c = md5ii(c, d, a, b, x[i + 14], 15, -1416354905)
+      b = md5ii(b, c, d, a, x[i + 5], 21, -57434055)
+      a = md5ii(a, b, c, d, x[i + 12], 6, 1700485571)
+      d = md5ii(d, a, b, c, x[i + 3], 10, -1894986606)
+      c = md5ii(c, d, a, b, x[i + 10], 15, -1051523)
+      b = md5ii(b, c, d, a, x[i + 1], 21, -2054922799)
+      a = md5ii(a, b, c, d, x[i + 8], 6, 1873313359)
+      d = md5ii(d, a, b, c, x[i + 15], 10, -30611744)
+      c = md5ii(c, d, a, b, x[i + 6], 15, -1560198380)
+      b = md5ii(b, c, d, a, x[i + 13], 21, 1309151649)
+      a = md5ii(a, b, c, d, x[i + 4], 6, -145523070)
+      d = md5ii(d, a, b, c, x[i + 11], 10, -1120210379)
+      c = md5ii(c, d, a, b, x[i + 2], 15, 718787259)
+      b = md5ii(b, c, d, a, x[i + 9], 21, -343485551)
+
+      a = safeAdd(a, olda)
+      b = safeAdd(b, oldb)
+      c = safeAdd(c, oldc)
+      d = safeAdd(d, oldd)
+    }
+    return [a, b, c, d]
+  }
+
+  /*
+  * Convert an array of little-endian words to a string
+  */
+  function binl2rstr (input) {
+    var i
+    var output = ''
+    var length32 = input.length * 32
+    for (i = 0; i < length32; i += 8) {
+      output += String.fromCharCode((input[i >> 5] >>> (i % 32)) & 0xff)
+    }
+    return output
+  }
+
+  /*
+  * Convert a raw string to an array of little-endian words
+  * Characters >255 have their high-byte silently ignored.
+  */
+  function rstr2binl (input) {
+    var i
+    var output = []
+    output[(input.length >> 2) - 1] = undefined
+    for (i = 0; i < output.length; i += 1) {
+      output[i] = 0
+    }
+    var length8 = input.length * 8
+    for (i = 0; i < length8; i += 8) {
+      output[i >> 5] |= (input.charCodeAt(i / 8) & 0xff) << (i % 32)
+    }
+    return output
+  }
+
+  /*
+  * Calculate the MD5 of a raw string
+  */
+  function rstrMD5 (s) {
+    return binl2rstr(binlMD5(rstr2binl(s), s.length * 8))
+  }
+
+  /*
+  * Calculate the HMAC-MD5, of a key and some data (raw strings)
+  */
+  function rstrHMACMD5 (key, data) {
+    var i
+    var bkey = rstr2binl(key)
+    var ipad = []
+    var opad = []
+    var hash
+    ipad[15] = opad[15] = undefined
+    if (bkey.length > 16) {
+      bkey = binlMD5(bkey, key.length * 8)
+    }
+    for (i = 0; i < 16; i += 1) {
+      ipad[i] = bkey[i] ^ 0x36363636
+      opad[i] = bkey[i] ^ 0x5c5c5c5c
+    }
+    hash = binlMD5(ipad.concat(rstr2binl(data)), 512 + data.length * 8)
+    return binl2rstr(binlMD5(opad.concat(hash), 512 + 128))
+  }
+
+  /*
+  * Convert a raw string to a hex string
+  */
+  function rstr2hex (input) {
+    var hexTab = '0123456789abcdef'
+    var output = ''
+    var x
+    var i
+    for (i = 0; i < input.length; i += 1) {
+      x = input.charCodeAt(i)
+      output += hexTab.charAt((x >>> 4) & 0x0f) + hexTab.charAt(x & 0x0f)
+    }
+    return output
+  }
+
+  /*
+  * Encode a string as utf-8
+  */
+  function str2rstrUTF8 (input) {
+    return unescape(encodeURIComponent(input))
+  }
+
+  /*
+  * Take string arguments and return either raw or hex encoded strings
+  */
+  function rawMD5 (s) {
+    return rstrMD5(str2rstrUTF8(s))
+  }
+  function hexMD5 (s) {
+    return rstr2hex(rawMD5(s))
+  }
+  function rawHMACMD5 (k, d) {
+    return rstrHMACMD5(str2rstrUTF8(k), str2rstrUTF8(d))
+  }
+  function hexHMACMD5 (k, d) {
+    return rstr2hex(rawHMACMD5(k, d))
+  }
+
+  function md5 (string, key, raw) {
+    if (!key) {
+      if (!raw) {
+        return hexMD5(string)
+      }
+      return rawMD5(string)
+    }
+    if (!raw) {
+      return hexHMACMD5(key, string)
+    }
+    return rawHMACMD5(key, string)
+  }
+
+  if (typeof define === 'function' && define.amd) {
+    define(function () {
+      return md5
+    })
+  } else if (typeof module === 'object' && module.exports) {
+    module.exports = md5
+  } else {
+    $.md5 = md5
+  }
+})(this);
+
+
+	
+	/***************定义全局变量*********************/
+
+	var PUB_KEY_MD5;//通用密码MD5加密后的值
+
+	//var INPUT_URL_APPNAME_FILENAME;//输入的 网站网址/APP/压缩文件
+
+	var RESULT_URL_APPNAME_FILENAME;//（先将输入统一大写转为小写（以防记错或误输入）并去空客）如果是网址处理为域名，压缩文件得到文件名陈，app不变
+
+
+	var LOGIN_NAMES = new Array;//账户 可以不填
+
+	var LOGIN_NAME_DELIMITER;//账户分隔符 只要账户填了必须选择
+
+
+	var RESULT_LENGTH = new Array;//密码长度，如果选择7~11位或12~16位，每个账户按顺序对应一个
+
+
+	var DICTIONARY;//生成密码用的字典
+
+	var ENGLISH_LOWERCASE = ["a","b",'c','d','e','f','g',
+							'h','i','j','k','l','m','n',
+							'o','p','q',
+							'r','s','t',
+							'u','v','w',
+							'x','y','z'];
+
+	var ENGLISH_UPPERCASE = ['A','B','C','D','E','F','G',
+					'H','I','J','K','L','M','N',
+					'O','P','Q',
+					'R','S','T',
+					'U','V','W',
+					'X','Y','Z'];
+
+	var NUMBER = ['0','1','2','3','4','5','6','7','8','9'];
+
+	var UNDERLINE = ['_'];
+
+	var OTHER_PASS_DICTIONARY_CHAR = new Array;
+
+	/***
+	*			首先是 为 …… 生成模块		   *
+											***/
+
+
+	//单选按钮 单击事件 每次被选中都要修改RESULT_URL_APPNAME_FILENAME
+	function updateResultURL(){
+		
+	}
+
+	//处理网址
+	//为什么要处理网址？因为我希望不论是用 https://blog.csdn.net/yucaifu1989/article/details/52038797 还是用 https://www.csdn.net/ 生成都能得到一个结果（两个url来自同一网站）
+	function editURL(url){
+	//下面搜集几组网站和url，看看到底用哪部分
+
+	//https://www.csdn.net/
+	//https://blog.csdn.net/yucaifu1989/article/details/52038797
+
+	//https://www.baidu.com/s?wd=url%20%E5%BE%97%E5%88%B0%20%E5%9F%9F%E5%90%8D&rsv_spt=1&rsv_iqid=0x99b8978d0003ef5a&issp=1&f=8&rsv_bp=1&rsv_idx=2&ie=utf-8&rqlang=cn&tn=baiduhome_pg&rsv_enter=1&oq=%25E7%25BD%2591%25E5%259D%2580%2520%25E5%25BE%2597%25E5%2588%25B0%2520%25E5%259F%259F%25E5%2590%258D&rsv_t=4980ihRUahTc86d8rdKw1WvlCZ%2FEyVhvvHErpvcyO2%2FPiLec1bNK3hO0ckNlnOT72r9y&rsv_pq=a19723ca0003c28f&inputT=1737&rsv_sug3=39&rsv_sug1=26&rsv_sug7=100&rsv_sug2=0&rsv_sug4=3050&rsv_sug=1
+	//https://www.baidu.com/
+	//https://tieba.baidu.com/index.html
+	//https://wenku.baidu.com/?fr=logo
+	//https://map.baidu.com/
+
+	//http://zentao.internal.zhijin.com/project-bug-12.html
+	//http://zentao.internal.zhijin.com/my/
+	//http://zentao.internal.zhijin.com/company-browse.html
+
+	//http://localhost:8089/page/main.jsp#/login
+	//http://localhost:8089/page/main.jsp#/unmatchedStudent
+
+	/*
+		url是什么？
+		url是（ Uniform Resource Locator ）统一资源定位符的缩写。
+
+		完整格式&语法
+		scheme:[//[user[:password]@]host[:port]][/path][?query][#fragment]
+		
+		传送协议。scheme
+		层级URL标记符号(为[//],固定不变)
+		访问资源需要的凭证信息（可省略）[user[:password]@]
+		服务器。（通常为域名，有时为IP地址）host
+		端口号。（以数字方式表示，若为HTTP的默认值“:80”可省略）[:port]
+		路径。（以“/”字符区别路径中的每一个目录名称）
+		查询。（GET模式的窗体参数，以“?”字符为起点，每个参数以“&”隔开，再以“=”分开参数名称与数据，通常以UTF8的URL编码，避开字符冲突的问题）
+		片段。以“#”字符为起点
+	*/
+
+	//域名就是我们想要的（当host为localhost和IP地址时，端口号也需要）
+
+
+	}
+
+
+
+
+
+	//处理压缩文件名得到文件名称（不带格式）
+
+
+
+
+	/***
+	*			生成密码		   *
+								***/
+	function generatePass(){
+		//要生成密码，为了防止 被生成密码泄露 从而逆推出原始的通用密码，先将原始的通用密码MD5处理PUB_KEY_MD5
+
+		//根据 文件名/网址/应用名 进行相应处理后得到第二串字符串 RESULT_URL_APPNAME_FILENAME
+
+		//得到账号字符串，如不为空就分隔，遍历生成密码写出
+
+	}
+
+	function generatePass(pass){
+	
+	}
+
+
+
+  
+
+  /**
+	*查寻已知name与value的复选框是否选中，选中则返回true
+	*/
+	function isCheck(checkBoxName,thevalue)
+	{
+		var aPassType = document.getElementsByName(checkBoxName);
+		var isCheck = false;
+		
+		for (var i = 0; i < aPassType.length; i++) {
+			if(thevalue == aPassType[i].value)
+			{
+				isCheck = aPassType[i].checked;
+			}
+		}
+		return isCheck;
+	}
+
+  
+  </script>
+
+  
+
+  <br/>
+
+<TABLE>
+<TR>
+	<TD rowSpan = "3">为</TD>
+	<TD><input type="radio" value="url" name="urlAppFileName" checked/> <span>网站网址<input id="url" type="text"/></span></TD>
+	<TD rowSpan = "3"><lable id = "resulturlAppFileName"></lable>而生成</TD>
+</TR>
+<TR>
+	<TD><input type="radio" value="app" name="urlAppFileName"/> <span>APP<input id="app" type="text"/></span></TD>
+</TR>
+<TR>
+	<TD><input type="radio" value="file" name="urlAppFileName"/> <span>压缩文件 <input id="file" type="file"/></span></TD>
+</TR>
+</TABLE>
+
+  <br/><br/>
+
+  <div id="loginName">
+	<span>账户</span>
+	<textarea name="textfield" type="text" rows="4" cols="30" value="只有一个账户时可以不填，若有多个账户，请用您选中的分隔符分隔开..."
+    onfocus="if (value =='只有一个账户时可以不填，若有多个账户，请用您选中的分隔符分隔开...'){value =''}"
+    onblur="if (value ==''){value='只有一个账户时可以不填，若有多个账户，请用您选中的分隔符分隔开...'}" >只有一个账户时可以不填，若有多个账户，请用您选中的分隔符分隔开...</textarea>
+
+	<p><span>分隔符</span></p>
+	<p> <input type="radio" value="," name="delimiter" checked/> <span>英文,</span></p>
+	<p> <input type="radio" value="，" name="delimiter"/> <span>中文，</span></p>
+	<p> <input type="radio" value=" " name="delimiter"/> <span>空格</span></p>
+	<p> <input type="radio" value="" name="delimiter"/><!-- 单选框选中时之后的输入款可输入 --> <span>其他</span><input id="elseDelimitere" type="text"/><!-- 输入后赋值到delimiter --></p>
+  </div>
+
+  <br/>
+
+  <div id="passLength">
+   <span>密码长度</span>
+	<p> <input type="radio" value="4" name="passLength"/> <span>4位</span></p>
+	<p> <input type="radio" value="6" name="passLength"/> <span>6位</span></p>
+	<p> <input type="radio" value="7-11" name="passLength" checked/> <span>7~11位</span></p>
+	<p> <input type="radio" value="12-16" name="passLength"/> <span>12~16位</span></p>
+	<p> <input type="radio" value="else" name="passLength"/> <span>其他：</span><input id="elseLength" type="text"/>位</p>
+  </div>
+
+  <br/>
+
+  <div id="dictionary">
+  <span>密码组成</span>
+	<p> <input type="checkbox" value="english" name="dictionary" checked/> <span>english</span></p>
+	<p> <input type="checkbox" value="ENGLISH" name="dictionary" checked/> <span>ENGLISH</span></p>
+	<p> <input type="checkbox" value="number" name="dictionary" checked/> <span>数字</span></p>
+	<p> <input type="checkbox" value="underline" name="dictionary"/> <span>下划线</span></p>
+	<p> <input type="checkbox" value="englishSymbol" name="dictionary"/> <span>英文标点</span></p>
+	<p> <input type="checkbox" value="elseDictionary" name="dictionary"/> <span>其他：</span><input id="elseDictionary" type="text"/></p>
+  </div>
+
+  <br/>
+
+  <div>
+  <span>通用密码</span>&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" name="InputPass"/>
+  </div>
+
+  <br/>
+
+  <div>
+  <p><input type="checkbox" name="isShow"/><span>不显示结果，直接覆盖粘贴板</span><span>只有未输入多个账户时能选择</span></p>
+  </div>
+
+  <br/>
+
+  <div>
+	<span>加密算法</span>
+	<inputtype="radio"/> 算法一 <inputtype="radio"/> 算法二 <inputtype="radio"/> 算法三
+  </div>
+
+  <br/>
+
+  <div>
+	<input id="u46_input" type="submit" value="开始生成"/>
+	<p><span>注意！只有当条件项都一样的时候才能生成同样的密码…………………………………………</span></p>
+  </div>
+
+  <br/>
+
+  <div>
+    <span>生成结果</span>
+	<div id="result"></div>
+  </div>
+
+  </body>
+</html>
