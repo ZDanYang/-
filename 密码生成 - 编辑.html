@@ -432,93 +432,150 @@
   
   </script>
 
-  
+  <style>
+      @media only screen and (min-width: 320px){
+          html {
+              font-size: 62.5% !important;
+          }
+      }
+      @media only screen and (min-width: 640px){
+          html {
+              font-size: 125% !important;
+          }
+      }
+      @media only screen and (min-width: 750px){
+          html {
+              font-size: 150% !important;
+          }
+      }
+      @media only screen and (min-width: 1242px){
+          html {
+              font-size: 187.5% !important;
+          }
+      }
+      .list-area {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: row;
+          border: 1px solid red;
+          width: 100%;
+          height: 200px;
+      }
+      .left-area{
+          flex: 1;
+          border: 1px solid green;
+          height: 100%;
+          text-align: center;
+          margin: 0 auto;
+          vertical-align: 100%;
+      }
+      .right-area {
+          flex:8;
+          border: 1px solid blue;
+          height: 100%;
+      }
+      .context {
+          margin: 20px;
+      }
+  </style>
+  <div style="margin: 30px 5%">
+      <div class="list-area">
+          <div class="left-area">
+              选</br>择</br>类</br>型
+          </div>
+          <div class="right-area">
+              <div class="context">
+                  <input><input type="radio">网站<input type="radio">app
+              </div>
 
-  <br/>
+          </div>
+      </div>
+      <div class="list-area">
+          <div class="left-area">
+              账</br>户
+          </div>
+          <div class="right-area">
+              <div class="context">
+                  <textarea></textarea>
+                  <label>选择分隔符：</label>
+                  <input type="radio">英文--','
+                  <input type="radio">中文--‘，’
+                  <input type="radio">空格--' '
+                  <input type="radio">其他<input>
+              </div>
 
-<TABLE>
-<TR>
-	<TD rowSpan = "3">为</TD>
-	<TD><input type="radio" value="url" name="urlAppFileName" checked/> <span>网站网址<input id="url" type="text"/></span></TD>
-	<TD rowSpan = "3"><lable id = "resulturlAppFileName"></lable>而生成</TD>
-</TR>
-<TR>
-	<TD><input type="radio" value="app" name="urlAppFileName"/> <span>APP<input id="app" type="text"/></span></TD>
-</TR>
-<TR>
-	<TD><input type="radio" value="file" name="urlAppFileName"/> <span>压缩文件 <input id="file" type="file"/></span></TD>
-</TR>
-</TABLE>
+          </div>
+      </div>
+      <div class="list-area">
+          <div class="left-area">
+              密</br>码</br>长</br>度
+          </div>
+          <div class="right-area">
+              <div class="context">
+                  <label>选择密码长度：</label>
+                  <input type="radio">4位
+                  <input type="radio">6位
+                  <input type="radio">7~11位
+                  <input type="radio">12~16位
+                  <input type="radio">自选长度<input>
+              </div>
 
-  <br/><br/>
+          </div>
+      </div>
+      <div class="list-area">
+          <div class="left-area">
+              密</br>码</br>组</br>成
+          </div>
+          <div class="right-area">
+              <div class="context">
+                  <input type="radio">English
+                  <input type="radio">english
+                  <input type="radio">数字
+                  <input type="radio">下划线
+                  <input type="radio">英文标点
+                  <input type="radio">其他<input>
+              </div>
 
-  <div id="loginName">
-	<span>账户</span>
-	<textarea name="textfield" type="text" rows="4" cols="30" value="只有一个账户时可以不填，若有多个账户，请用您选中的分隔符分隔开..."
-    onfocus="if (value =='只有一个账户时可以不填，若有多个账户，请用您选中的分隔符分隔开...'){value =''}"
-    onblur="if (value ==''){value='只有一个账户时可以不填，若有多个账户，请用您选中的分隔符分隔开...'}" >只有一个账户时可以不填，若有多个账户，请用您选中的分隔符分隔开...</textarea>
+          </div>
+      </div>
+      <div class="list-area">
+          <div class="left-area">
+              密</br>码</br>组</br>成
+          </div>
+          <div class="right-area">
+              <div class="context">
+                  <input type="radio">English
+                  <input type="radio">english
+                  <input type="radio">数字
+                  <input type="radio">下划线
+                  <input type="radio">英文标点
+                  <input type="radio">其他<input>
+              </div>
+          </div>
+      </div>
+      <div class="list-area">
+          <div class="left-area">
 
-	<p><span>分隔符</span></p>
-	<p> <input type="radio" value="," name="delimiter" checked/> <span>英文,</span></p>
-	<p> <input type="radio" value="，" name="delimiter"/> <span>中文，</span></p>
-	<p> <input type="radio" value=" " name="delimiter"/> <span>空格</span></p>
-	<p> <input type="radio" value="" name="delimiter"/><!-- 单选框选中时之后的输入款可输入 --> <span>其他</span><input id="elseDelimitere" type="text"/><!-- 输入后赋值到delimiter --></p>
-  </div>
+          </div>
+          <div class="right-area">
+              <div class="context">
+                  <label>通用密码：</label>
+                  <input>
+                  <input type="checkbox">不显示结果，直接覆盖粘贴板只有未输入多个账户时能选择
+                  <p>加密算法：</p>
+                  <button>算法一</button>
+                  <button>算法二</button>
+                  <button>算法三</button>
+              </div>
+          </div>
+      </div>
+      <div class="list-area">
+          <button>开始生成</button>
+          <p>注意！只有当条件项都一样的时候才能生成同样的密码…………………………………………</p>
+          <span>生成结果：</span>
+      </div>
 
-  <br/>
-
-  <div id="passLength">
-   <span>密码长度</span>
-	<p> <input type="radio" value="4" name="passLength"/> <span>4位</span></p>
-	<p> <input type="radio" value="6" name="passLength"/> <span>6位</span></p>
-	<p> <input type="radio" value="7-11" name="passLength" checked/> <span>7~11位</span></p>
-	<p> <input type="radio" value="12-16" name="passLength"/> <span>12~16位</span></p>
-	<p> <input type="radio" value="else" name="passLength"/> <span>其他：</span><input id="elseLength" type="text"/>位</p>
-  </div>
-
-  <br/>
-
-  <div id="dictionary">
-  <span>密码组成</span>
-	<p> <input type="checkbox" value="english" name="dictionary" checked/> <span>english</span></p>
-	<p> <input type="checkbox" value="ENGLISH" name="dictionary" checked/> <span>ENGLISH</span></p>
-	<p> <input type="checkbox" value="number" name="dictionary" checked/> <span>数字</span></p>
-	<p> <input type="checkbox" value="underline" name="dictionary"/> <span>下划线</span></p>
-	<p> <input type="checkbox" value="englishSymbol" name="dictionary"/> <span>英文标点</span></p>
-	<p> <input type="checkbox" value="elseDictionary" name="dictionary"/> <span>其他：</span><input id="elseDictionary" type="text"/></p>
-  </div>
-
-  <br/>
-
-  <div>
-  <span>通用密码</span>&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" name="InputPass"/>
-  </div>
-
-  <br/>
-
-  <div>
-  <p><input type="checkbox" name="isShow"/><span>不显示结果，直接覆盖粘贴板</span><span>只有未输入多个账户时能选择</span></p>
-  </div>
-
-  <br/>
-
-  <div>
-	<span>加密算法</span>
-	<inputtype="radio"/> 算法一 <inputtype="radio"/> 算法二 <inputtype="radio"/> 算法三
-  </div>
-
-  <br/>
-
-  <div>
-	<input id="u46_input" type="submit" value="开始生成"/>
-	<p><span>注意！只有当条件项都一样的时候才能生成同样的密码…………………………………………</span></p>
-  </div>
-
-  <br/>
-
-  <div>
-    <span>生成结果</span>
-	<div id="result"></div>
   </div>
 
   </body>
